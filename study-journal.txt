@@ -1,0 +1,7 @@
+5jan2020
+
++ refactored study environment
++ finished ps item: How Git Works
++ done stup ssh in x230, added to gh
+
+- attempt to configure eclipse
