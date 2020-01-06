@@ -7,4 +7,5 @@
 + download and install latest jdk (13)
 + download and setup eclipse
 + establish sop for java project, eclipse, git local and remote repo
++ establish sop for notes
 
