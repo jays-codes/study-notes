@@ -1,1 +1,18 @@
 Setting up eclipse in GIT
+
+eclipse, GIT, java SOP
+
++ When creating a new java project
+	1. create project
+	2. share project as git
+	
+------------------------------------------
+Remote, Local repo mappings
+
+git@github.com:jays-codes/test-workspaces.git 
+<->
+C:\jay\training\test-workspaces
+
+git@github.com:jays-codes/study-notes.git
+<->
+C:\jay\training\study-notes
