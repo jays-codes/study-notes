@@ -5,6 +5,6 @@
 + done stup ssh in x230, added to gh
 + enabled note-taking sop using notepadd++, local and remote git repo.
 + download and install latest jdk (13)
++ download and setup eclipse
++ establish sop for java project, eclipse, git local and remote repo
 
-- establish sop for java project, eclipse, git local and remote repo
-	- download and setup eclipse
