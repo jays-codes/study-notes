@@ -6,6 +6,10 @@ eclipse, GIT, java SOP
 	1. create project
 	2. share project as git
 	
++ A project is committed to a shared gh repo of and with other related projects. 1 gh repo, 1 or more projects
+
++ if a project is stand alone, it should have a gh repo of its own. 1 project = 1 gh repo
+	
 ------------------------------------------
 Remote, Local repo mappings
 
