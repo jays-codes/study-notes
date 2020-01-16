@@ -1,5 +1,8 @@
-5jan2020
+16jan2020
++ 1.5h for ps:mg
 
+
+5jan2020
 + refactored study environment
 + finished ps item: How Git Works
 + done stup ssh in x230, added to gh
@@ -17,3 +20,4 @@
 Objectives
 
 -plan overall training outline
+
