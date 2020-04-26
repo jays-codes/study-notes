@@ -1,3 +1,13 @@
+
+------------------------------------------
+26 apr 20
+BP : copying a remote repo to local
+	-> git clone <repo>
+
+	- this will also copy the root folder from origin so you don't have to recreate the root folder in local 
+
+------------------------------------------
+
 Setting up eclipse in GIT
 
 eclipse, GIT, java SOP
