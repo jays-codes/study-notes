@@ -1,10 +1,14 @@
+------------------------------------------
+3 may 20
+
 
 ------------------------------------------
 26 apr 20
 @@@@@@@@@@@ BP : copying a remote repo to local 
 	-> git clone <repo>
 
-	- this will also copy the root folder from origin so you don't have to recreate the root folder in local
+	- this will also copy the root folder from origin so you don't have to recreate the root folder in local. 
+
 
 @@@@@@@@@@@ BP : user error when doing git push
 	-> create a personal accesskey in GH and use that key when prompted for the password
@@ -28,8 +32,8 @@ Remote, Local repo mappings
 
 git@github.com:jays-codes/test-workspaces.git 
 <->
-C:\jay\training\test-workspaces
 
+C:\jay\training\test-workspaces
 git@github.com:jays-codes/study-notes.git
 <->
 C:\jay\training\study-notes
