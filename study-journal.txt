@@ -1,7 +1,13 @@
+7may
++
+
+Have to finally finish mg and maven by tomorrow friday (8 may). Next up after maven, we brushup on java and design patterns at the same time.
+-------------------- 
 16jan2020
 + 1.5h for ps:mg
 
 
+--------------------
 5jan2020
 + refactored study environment
 + finished ps item: How Git Works
