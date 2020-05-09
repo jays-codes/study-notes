@@ -1,3 +1,13 @@
+--------------------
+9may20
+
++ git rebase -i
++ git reflog
++ git revert HEAD
++ git reset
++ git commit --amend
+
+--------------------
 7may
 +
 

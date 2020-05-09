@@ -1,4 +1,39 @@
 ------------------------------------------
+9 may 20
+@@@@ BP : interactive rebase
+	-> git rebase -i
+	- only do this for commits that aren't shared yet
+	- modifies history of commits
+	- use notepad instead of subl
+
+	-> git rebase --abort
+	-> git rebase -q
+		- this is to cancel in the middle of a rebase
+		- if cancelling results with HEAD not pointing to a branch, just checkout the branch
+	-> git push -f
+		- this is to force the rebase to the remote repo
+	BP : for a workflow, you should commit to your local early and often, when ready to finally push the work to a shared repo, you should do an interactive rebase to clean your history
+
+@@@@ BP : reflog
+	-> git reflog HEAD
+	- list the changes (with their hashes) to the commits pointed to by HEAD, even ones that have been dropped but not garbage collected
+	- you can do a git show on a hash from the list
+
+-> git revert <commit>
+-revert changes introduced in this commit and records to revert in a new commit. it doesn't mean undo. git reset is more like undo.
+
+- modify the current commit with changes that are currently staged, use commit --amend
+
+@@@@ Settingup git workflow
+	-> Distribution Model, Branching Model, Constraints
+	Distribution Model: Peer2Peer, Centralized, Pull-Request, Dictator/Lieutenant
+
+	Branching Model
+	-> Integration Branch: often called main branch, master, place where things come together and where you solve conflicts. Is often stable. Automated-build systems checks whatever is on this branch
+
+
+
+------------------------------------------
 7 may 20
 
 
@@ -8,13 +43,13 @@
 
 ------------------------------------------
 26 apr 20
-@@@@@@@@@@@ BP : copying a remote repo to local 
+@@@@ BP : copying a remote repo to local 
 	-> git clone <repo>
 
 	- this will also copy the root folder from origin so you don't have to recreate the root folder in local. 
 
 
-@@@@@@@@@@@ BP : user error when doing git push
+@@@@ BP : user error when doing git push
 	-> create a personal accesskey in GH and use that key when prompted for the password
 
 ------------------------------------------
