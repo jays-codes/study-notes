@@ -15,7 +15,7 @@
 	BP : for a workflow, you should commit to your local early and often, when ready to finally push the work to a shared repo, you should do an interactive rebase to clean your history
 
 @@@@ BP : reflog
-	-> git reflog HEAD
+	-> git reflog HEAD : audit histiry and recover from mistake
 	- list the changes (with their hashes) to the commits pointed to by HEAD, even ones that have been dropped but not garbage collected
 	- you can do a git show on a hash from the list
 
@@ -29,9 +29,22 @@
 	Distribution Model: Peer2Peer, Centralized, Pull-Request, Dictator/Lieutenant
 
 	Branching Model
-	-> Integration Branch: often called main branch, master, place where things come together and where you solve conflicts. Is often stable. Automated-build systems checks whatever is on this branch
+	-> Integration Branch: often called main branch, master, place where things come together and where you solve conflicts. Is often stable. Automated-build systems checks whatever is on this branch.
+	-> Release Branch: BP often tags point to points in this branch to mark version releases, or sometimes they have a release branch instead of a tag
+	-> Feature/Topic Branch: branch out from integration where specific feature are worked on separately and later merged back into the integration branch
+	-> hotfix branch: branch out of a release branch. used to have the same commit to two separate branches. e.g a fix commit is done on this branch and merged the hotfix branch into both release and integration branch
 
+	Constraints/Rules
+	-> Don't push when the build is red: let the current developer correct the build first
+	-> only developer X can do Y on branch Z
+	-> rebase, dont merge/vice versa
+	-> GIT Hooks: feature in GIT to run a script whenever an event happens. e.g a hook runs a script on a build server whenever a dev pushes something
 
+	gitflow example:
+	https://nvie.com/posts/a-successful-git-branching-model/ <- dont just use gitflow.
+
+	- start with a simple workflow: centralized with one integration and feature branch.
+	- grow it when needed
 
 ------------------------------------------
 7 may 20
