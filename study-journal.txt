@@ -1,11 +1,14 @@
 --------------------
 9may20
 
+++++ finished ps course: Mastering GIT
 + git rebase -i
 + git reflog
 + git revert HEAD
 + git reset
 + git commit --amend
+
++ git workflow
 
 --------------------
 7may
