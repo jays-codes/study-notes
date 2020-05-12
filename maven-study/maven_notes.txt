@@ -1,2 +1,85 @@
 ------------------------------------------
+11 may 20 mon
+
+Folder structure
+-> 
+	workspace 
+		> /<ProjectFolder> 
+			> /src/main/java
+			> /target
+			> pom.xml
+
+-> src/main/java
+	- root of java code
+	- beginning of package declaration
+	- 
+
+-> src/test/java
+	- for test classes (unit test)
+
+-> target directory
+	- where everything get compiled to, and where everything gets ran from
+
+-> pom file
+	- pom.xml
+	- elements
+		- project
+		- groupId: package designating our application name
+		- artifactId: application name/project name
+		- version: snapshots, releases. sequential in nature
+		- packaging: jar, ear, war
+		- dependencies
+
+-> dependencies
+	- imported by their namin convention
+	- to use, we must know their 
+		groupId: packageing structure, 
+		artifactid: name of the dependency, and 
+		version: release number
+	- defined in the pom
+
+-> Goals
+	- ran by 'mvn <goal>'
+	clean: deletes /target
+	compiles: compiles source code into /classes
+	package: ran compile first, runs unit tests
+	install: run package
+	deploy: runs intall, and deploy to corporate repository
+
+
+-> build section (in pom)
+	- used to override defaults
+
+
+Dependencies
+	- versions
+	- types
+	- transitive dependiencies
+	- scopes
+
+-> Snapshot
+	- all develeopment should start with version snapshot
+	- all uppercase "SNAPHOT"
+	- myApp-1.0-SNAPSHOT.jar
+
+	Milestone Release: myApp-1.0-M1
+	Release Candidate: myApp-1.0-RC1
+	Final Release: myApp-1.0-RELEASE
+
+-> Packaging Types
+	- pom, jar, war, ear, maven-plugin
+
+-> scopes
+	- compile
+	- provided
+	- runtime: not need at compilation but at runtime. dynamically provided
+	- test
+	- system: shouldn't use
+	- import: deals with dependency management
+
+------------------------------------------
 9 may 20
+
+Installing Maven
+1. download binary from maven site
+2. setup MAVEN_HOME, JAVA_HOME
