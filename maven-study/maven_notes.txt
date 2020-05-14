@@ -1,6 +1,41 @@
 ------------------------------------------
+13 may 20 wed
+
+-> Plugins
+	- what maven uses to build and package our applications
+
+-> Goals: are plugins configured in the maven install
+	- default: clean, compile, test, package, install, deploy
+	- are essentially configured plugins in our application
+
+-> Phases
+	- validate, compile, test, package, integration-test, verify, install, deploy
+
+-> Compiler plugin
+	- usually changed to specify version of java
+
+-> Jar plugin
+	- overriden to generate manifest file
+
+-> Sources plugin
+-> Javadoc plugin
+
+------------------------------------------
 11 may 20 mon
 
+-> Repos
+	- Dpendency Repo, Plugin Repo, Releases/Snapshots
+
+-> Local Repository
+	- where maven looks for code initially, if not it goes out and download from a remote repo
+	- ~/.m2/repository <- local maven repo
+
+-> <repositories> :same level as <dependencies> in pom
+
+-> corporate repository
+	- good idea to have one to store own libraries
+
+-----------------
 Folder structure
 -> 
 	workspace 
