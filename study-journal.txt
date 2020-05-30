@@ -1,7 +1,25 @@
+
+Lineup:
+	*1.) PS: Eclipse for Java Developers
+	2.) ud: Maven: Stop bldng prog
+	3.) ud: Maven: Truth about bldng prog
+	4.) ud: Java Masterclass - Beginner to Expert Guide
+	4.) ud: UML and OOD foundations
+	5.) ud: Java Design Patterns - The Complete Masterclass
+	5:) HF: Design Patterns
+
+Done:
+------------------------------------------------------------
+--------------------
+30may20
+
+Current:
+PS: Eclipse for Java Developers
+
 --------------------
 11may20
 
-ps: Maven Fundamentals: section 5:Repositories
+ps: Maven Fundamentals: section 6:Plugins
 
 --------------------
 9may20
