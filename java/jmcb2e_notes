@@ -1,0 +1,627 @@
+
+Oct 6
+
+MultiThreading
+	Thread
+	- independent path of code execution
+	- Many thread can run concurrently/at the same time in a java program
+	- has Runnables - objects that encapsulate code sequences to be executed
+	-can be synchronous (one at a time) or asynchronous (initiates task concurrently)
+
+	Creating a Thread
+	- to create a thread type, the type must implement Runnable Interface and override the run() method 
+	- to instantiate and run a Thread object, you can call the runnable object's run() method or, wrap the runnable object inside a Thread reference and call the start() method of the obj reference.
+	- e.g.
+		//JayThread t1 = new JayThread("jays thread", 1000);
+		//Thread thread1 = new Thread(t1);
+		//thread1.start();
+		(new JayThread("jays thread", 1000)).run();
+	- BP: to enable to execute multiple threads, have the thread object define a reference to its own Thread and start the thread in the constructor. e.g.
+		class JayThread implements Runnable {	
+			Thread jaythread;
+			String name;
+			long countSpeed;
+			
+			@Override
+			public void run() {
+				for (int i=0;i<10;i++) {
+					System.out.println(name + ": " + (i+1) + "...");
+					try {
+						Thread.sleep(countSpeed);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			JayThread(String name, long countSpeed){
+				this.name = name;
+				this.countSpeed = countSpeed;	
+				jaythread = new Thread(this, name);
+				jaythread.start();
+			}
+		}
+	- isAlive()
+	- join()
+		- thread calling join goes into a waiting state until the referenced thread terminates
+	- setPriority()
+	- BP: Synchronized methods
+
+
+Design Patterns
+
+Sept 28 mon
+
+Parallel Streams
+	-> parellelStream()
+		- used when source of stream is a collection or array
+	-> parallel()
+		- used for other than collections or an array. e.g.
+			IntStream, LongStream, DoubleStream
+
+	- Stream API automatically uses the ForkJoin framework to execute operations in parallel
+
+	-> <parallelStreamObj>.sequential(); 
+		- converts parallel stream back to sequential stream 
+
+Sept 25/26/28 fri/sat/mon
+
+Java Stream API
+	- java.util.Stream<T>
+	- contains classes for processing sequence of elements, internal iteration of its elements
+	- provides functionality for processing its elements during iteration
+	- Stream creation is done via:
+		- Collection.stream()
+		- Stream.of(<T>..)
+	- .forEach(expression) iterates over each element of the stream
+	- e.g.
+		Stream<Product> stream = prods.stream();
+		Stream<String> lcStream = stream.map(
+			(Product prod) -> {return prod.name.toUpperCase();}
+		);
+		
+		lcStream.forEach(str -> {
+			System.out.println(str);			
+		});
+	- Stream Usage
+		1. Obtain a stream
+		2. call 0 or more non terminal operations on the stream
+		3. call a terminal operation on the stream
+		- non-terminal/intermediate operations
+			- returns Stream<T> 
+			- filter, map, flatMap, distinct, limit, peek
+			- concatenate Streams. allows chaining
+			- element processing. Does not start iteration of elements
+			- you can call only one non-terminal operation on a stream. if you try to do a second call, a runtime exception is thrown
+		- terminal operation 
+			- starts iteration, 
+			- does not return a new stream. 
+			- anyMatch, collect, count, findAny, findAll, forEach, min, max, reduce, toArray
+			- parallel stream processing
+
+	- stream().map() 
+		- lets you convert an object to something else. e.g.
+			Stream<T> to Stream<String>
+		- if you dont neet the stream references, you can call the method chain directly on the Collection. e.g:
+		prods.stream()
+		.map(prod -> prod.name.toUpperCase())
+		.forEach(System.out::println);
+		- take note the last line is a method reference that infers the type from the stream where the method call (.forEach) originated.
+	-> list.stream().distinct() 
+		- returns a stream of unique elements of the previous stream
+  	-> stream().filter() 
+  		- returns a stream containing only the filtered elements. e.g.
+		Stream<String> stream = list.stream().filter(element -> element.contains("d"));
+		//above returns a stream of elements which contains the char 'd'
+	-> stream().skip(n)
+		- omits the number of element n for the new string
+  		
+	-> stream().reduce()
+		- reduce(<int identity>, (tempSum, value) -> operation);
+			- identity is the initial value of tempSum
+			- tempSum accumulates or aggregates the value, depending on whats done in the operation.
+			- e.g.
+			.reduce(0, (x, y) -> x+y); 
+			is equivalent to saying for each item in the map represented by y, add it to the value of x. and return the final value
+	-> stream().count() returns a long representing count of items in the stream
+  	-> stream().anyMatch(). Below statement:
+  		for (String str : list) {
+  			if (string.contains("a")){
+  				return true;
+  			}
+  		}
+		can now be replaced by:
+		boolean isExist = list.stream().anyMatch(element -> element.contains("a"));
+	-> .collect(Collectors.to<List>()); accumulates the input elements into the new list and returns it. can be toSet() or toMap()
+		- .collect(Collectors.joining(<delimiter>)) concatenates the input stream elements into a single String. Applicable to Stream of strings, StringBuffer or StringBuilder
+	-> Collectors.summingInt
+		- this sums all the numeric elements of a stream
+		- applies to summingDouble(), summingLong()
+		-e.g.
+			int total = prods.stream()
+				.collect(Collectors.summingDouble(Product::getPrice))
+		- same principle for 
+			-> Collectors.averagingInt
+	-> Collectors.groupingBy
+		- results in a map where the key would be the Type of the groupingBy parameter. e.g.
+			Map<Integer, List<Product>> groupedByPrice = 
+				productList.stream()
+				.collect(Collectors.groupingsBy(Product::getPrice));
+			//the code above returns a map of price, product list pair where products of the same price are grouped together.
+	-> Collectors.partitionBy()
+		- results in a map
+		- divide elements into groups according to some predicate. e.g.
+			Map<Boolean, List<Product>> trueFalseMap = productList.stream()
+			.collect(Collectors.partitioningBy(prod -> prod.getPice > 15));
+	-> Collectors.toMap()
+		- returns a Map
+		- e.g.
+			String[] col = {"id", "name", "age", "addr"};
+			String[] val = {"9446687","jay","23","4 park on"};
+
+			Map<Object, Object> result = IntStream.range(0, col.length)
+				.boxed()
+				.collect(
+					Collectors.toMap(i -> col[i], i -> val[i])
+				);
+
+	-> Stream.iterate()
+		- returns a stream of elemnts which are products of a defined iteration operation. e.g.
+			Stream<Integer> stream = Stream.iterate(10, i -> i + 1).limit(10);
+			This returns a stream of Integer objs with elements from 10 to 19
+	-> Stream.builder()
+		- Stream.<T>builder().add(<obj>).build();
+	-> Stream.generate(). e.g.
+		Stream<String> streamGenerated =
+  		Stream.generate(() -> "element").limit(10);
+  		//generates a stream of ten elements with the value 'generate'
+  	
+	-> Stream of Primitives
+		- IntStream, LongStream, DoubleStream
+		- .range(start, end exclusive) - returns a stream
+		- .rangeClosed(start, end inclusive)
+	-> creating random stream prmitives e.g.
+		Random random = new Random();
+		DoubleStream doubleStream = random.doubles(3); //3 elements
+	-> <String>.chars() 
+		- returns an IntStream. e.g. "jay".chars();
+	-> Stream<Strings> from a file e.g.
+		- used to convert every line in the file to an element of Stream<String>
+		Path path = Paths.get("testFile.txt");
+		Stream<String> streamOfStrings = Files.lines(path);
+		Stream<String> streamWithCharset = 
+		  Files.lines(path, Charset.forName("UTF-8"));
+
+
+
+Sept 24 thurs
+
+Lambda Expressions
+	- java 8; a function that can be created without belonging to any class
+	- are stateless; lambda expressions are essentially objects
+	- can be passed around as if it was an object and executed on demand
+	- used for implementing event listeners, callbacks
+	- whe you want to treat a method implementation like an object. e.g.
+		//anonymous implementation
+		Comparator<String> strComp = new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}		
+		};
+		int res = strComp.compare("Jay", "daddy");
+		System.out.println("result: " + res);
+		
+		//Lambda implementation
+		Comparator<String> strComp2 =  (o1,o2) -> o1.compareTo(o2);
+		int res2 = strComp2.compare("Jay", "daddy");
+		System.out.println("result: " + res2);
+
+	-> Functional Interfaces
+		- as of Java 8, you can have implementation for methods in terfaces: default and static methods 
+		- can only implement interface that has a single abstract method. Note that the interface might have other implemented methods (as of java 8; default and static methods) - all those methods (default)would be available in the lambda reference
+
+	-> Variable Capture from within lambda expression
+		- to access state outside from lambda expression, you need to reference variable from outside the lambda
+		- the local variable must be final or appear to be final. Any attempt to resuse the variable after is has been used in the lambda with throw a compile error
+		- the above doesnt apply to static class variables
+		- e.g. 
+
+	-> Using method references
+		- the instance method must have the same signature of the method belonging to the type the expression is being assigned to
+		- e.g MyAnimal animal = anyObjRef::move;
+		- constructor reference e.g.:
+			Factory factory = String::new
+			//this is equivalent to 
+			Factory factory = chars -> new String(chars);
+
+	-> Lambda for each loop
+		- e.g. 
+			List<String> list = new ArrayList<>();
+			list.forEach(
+				(item) -> System.out.println(item)
+			);
+
+Sept 22 tues
+
+Sets
+	- no duplicates. If you try to add an item already existing in the set, it wont be added.
+	-> HashSet
+
+	-> TreeSet
+		- perform sorting on the set based on the types implementation of comparator
+
+	-> LinkedHashSet
+		- maintains the order of when items was added to the set
+
+i/o
+	-> reading file
+		- using java.io.FileInputStream: reading bytes
+		- e.g.
+			File file = new File("test.txt");
+			FileInputStream fis = new FileInputStream(file);
+			while ((content = fis.read()) != -1) {
+				System.out.print((char) content);
+			}
+		- using java.io.BufferedReader: reading character and strings
+		- e.g. 
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				System.out.println(line);
+			}
+
+
+	-> writing to a file
+		- use java.io.FileWriter
+		- e.g.
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write("Hello World");
+			fw.close
+		} catch() {}
+
+Sept 18 Fri
+
+i/o
+	-> keyboard input
+		- use System.in.read(byte[] input);
+
+Sept 16 Wed
+
+Generics
+	- available since java 5
+	- used to define clear type constraints
+	- type is determined and passed as an argment during implementation 
+	- cannot pass in primitives
+	- <> diamond operator declares the generic type, once it's declared, it can be used when assigning variables
+	- works well in situations where you are manipulating a collection where you need to perform common operations
+
+	-> Generic Interface
+		- e.g.
+			public interface GenericInterfaceA <T, R>{
+				R performAction(final T action)
+			}
+
+	-> Generic Class
+		- allow a class to accept any type as a parameter
+		- e.g.
+			public class GenericClassImplementingGenericInterface< T >
+        		implements GenericInterfaceOneType< T > {
+    
+    			@Override
+    			public void performAction( final T action ) {
+        			// Implementation here
+    			}
+			}
+
+	-> Generic methods
+		- e.g. public< T, R> R performAction( final T action ) {
+			    final R result = ...;
+			    // Implementation here
+			    return result;
+			}
+
+	-> Bounded Types
+		- e.g. <T extends X>. X is the upper bound which can be a class or interface.
+		- restricts the type parameter to a subclass of some other class or implement one or more interfaces
+		- e.g.	public <S, T extends S> T doSomething(T param1){}
+			public class Painter<T extends Shape>{
+				public void draw(T shape){}
+			}
+		- to use multiple bounds, use '&' e.g. public class WindowApp<T extends Number, U extends Runnable>{} 		
+
+	-> wild cards (?)
+		- used if type param is not of interest of the generic class, interface or method
+		- e.g. 	<X> X executes2(Collection<? extends Jayable3> param1);
+
+	-> BP: instead of declaring a method like this:
+		public <T> T process(Collection<Animal> animals);
+		write it like below instead:
+		public <T> T process(Collection<? extends Animal> animals)
+		- this means the method above can accept any collection which are subtypes of 'Animal'
+	->
+
+
+Sept 13,14 Sunday/Monday
+
+
+Enumerations
+	- list of constants with unchangeable value. they are implicitly static and final. used for flags, type constants.
+	- specifies a list of constant values assigned to a type
+	- can be declared inside or outside a class but not in a method
+	- can be compared via switch-case, ==, equals()
+	- can contain
+		- constructors
+		- variables
+		- methods
+		- constant class bodies
+	- enums can send arguments to the enum contructor using syntax 'BIG(8)'. they can also be overloaded. the constructors can never be invoked like a normal class constructor, they are called automatically when an enum is initialized
+	- you should always use enums when a variable can only take one out of a small set of possible values
+	- enum constructors are private
+	- avoids passing invalid values and document which values are legal
+	- effective java: bp: use enums instead of int constants, enumset instead of bit fields
+	- e.g.
+		public enum Company {
+			EBAY(30), PAYPAL(10), GOOGLE(15), YAHOO(20), ATT(25);
+			private int value;
+ 
+			private Company(int value) {
+				this.value = value;
+			}
+		}	
+
+Autoboxing 
+	- auto conversion between primitive and their corresponding object wrapper classes
+
+Annotations
+	- information or metadata that provides info to the compiler
+	-> @Override (method)
+		- BP: use this on a method that you actually meant to override the supertype implementation i.e. public boolean equals(Object obj){}	
+	-> @FunctionalInterface (interface)
+		- has exactly one abstract method
+
+Interfaces
+	- no definition/implementation
+	- declares functionality
+	- methods are implicitly public and abstract
+	- methods are all abstract
+	- properties are implicitly public static and final
+	- java does multiple inheritance via interfaces
+	- implementing class must provide definition forinterface methods
+
+Inner and Outer Classes
+	-> inner classes 
+		- also called nested classes
+		- should exist only to serve its enclosing class
+		- they may be static or non static. note from 'effective java' favor static member classes over non static
+		- has access to all methods and properties (even private) of the outer class
+		- can be private (unlike an outer class), and if so, cannot be access from an object outside the outer class
+		- can be method local 
+		- can be annonymous inner class
+			- inner class is declared and instantiated at the same time. returns a one-off object
+		- to instantiate an inner class, you must first instantiate the outer class
+		- e.g. 
+			OuterClass oclsobj = new OuterClass();
+			OuterClass.Innerclass iclsobj = oclsobj.new InnerClass();
+
+
+
+Sorting
+	- Arrays.sort(<Array obj>) : normal implementation is quicksort
+
+Math
+	- abs()
+
+static keyword
+	-> static property, the property has the same value to/is shared among all the objects of the type
+	-> static method
+		- is invoked on the type, not the object instance
+		- able to access static properties of a class, non static variables/methods cannot be accessed from a static method within the same type
+	-> static block
+		- executed before main. i.e.
+			static{}
+
+Sept 9
+
+Data Structures
+
+Arrays
+
+ArrayList
+	- java.util.Arraylist<E>
+	- you can iterate via for loop for (<al type> mytpe : <Arraylist>)
+
+HashMap
+	- key, value pair
+	- HashMap<key type, val type> myHashmap = new HashMap<>();
+
+Sept 6
+	
+Java primitives
+	- byte [0..127]
+	- short [0..32767]
+	- int
+	- float
+	- double - used for precision
+	- char
+	- boolean
+
+Loops
+	- for loop
+		- for (int i=0;i<max;i++){}
+	- while loop
+		while (expression) {}
+
+Access Specifiers
+	Class: public, 
+	Methods: public, private (accessible only inside class), protected
+	class variable: private*, public
+
+Constructor
+	- used to instantiate an object
+
+overloading methods/constructor
+	- same method name, different parameters
+
+overriding method
+	- same signature, different implementation
+	- child types inheriting from parent can override method by providing their own implementation
+
+Inheritance
+	- is-a relationship; 
+	- <child class> extends <parent class>
+
+Exceptions
+	- try {
+
+	} catch (){
+
+	} finally {//will always run; usually clean code}
+
+Java class library
+	- StringBuilder - used for manipulating Strings
+
+Object Class
+	- all classes extends Object
+	- provides:
+		- boolean equals(Object obj)
+		- toString()
+		- int hashCode()
+
+Composition
+	- has-a
+
+Polymorphism
+	- overidden/ovreloaded methods (multiple behavior) are called depending on the reference or specific type of the object its being called from
+
+Polymorphic arguments	
+	- behavior invoked depends on the type of the instance passed as an argument (to a method)
+
+Sept 5,6 
+
+Java Acronyms
+	- JSR - Java Specification Request - feature to be added to java library
+	- JEP - JDK Enhancement Proposal
+	- REPL - Read Evaluate Print Loop - java sandbox to test pieces of code
+	- PID - Process ID - each java process has iD assigned
+
+Java 9 Features: what's new (https://openjdk.java.net/projects/jdk9/)
+	- http/2
+	- JSR 376: Java Module System-Jigsaw
+	- REPL / jshell
+	- Modular JDK
+	- Process API
+
+	Jshell
+		- to run, you must have java 9 or higher. > jshell -v 
+		- to exit: ctrl+d
+		- /help, /list, /import, /exit
+
+	Process API
+		- fetch in java app certain info about process happening
+
+	Java Platform Module System
+		- dependencies are arranged in smaller modules
+		- Benefits: Reliable Config, String Encapsulation, Scalable Java Platform, greater platform integrity
+
+		-> Java Module
+			- package of related packages 
+			- has a module descriptor file, module-info.java located at the root of the source folder.
+			- contains: Data and code, dependencies config, native code, other resources
+			- each package would have a module-info.java
+			- module-info must be at the root of the package
+			
+		-> module-info.java
+			- module descriptor
+		-> 'exports' directive 
+			- exposes all public members of named package
+			- this directive is declared in modules that provides access to its public members
+			- i.e
+				module com.jay.assorted {
+					exports com.jay.assortedService;
+				}
+				-> when someone requires the above module, they will have access to public types in the module referred to by exports
+				
+			-> exports..to
+				-  only specify which modules we are allowing access to the above module
+			module com.jay.assorted {
+				exports com.jay.assortedService to com.jay.assortedUsers;
+			}
+
+		-> 'requires' directive
+			- this directive is used in modules that consumes, or is dependent to other modules 
+			- the dependency is both runtime and compile time
+			- module com.jay.assorted {
+				requires com.jay.assortedService;
+			}
+					
+			-> requires static
+				- declares only compile time dependency
+				- module com.jay.assorted {
+					requires static com.jay.assortedService;
+				}
+				
+			-> requires transitive
+				- automatically brings in dependency modules when parent module is set as a dependency 
+				- module com.jay.assorted {
+					requires transitive com.jay.assortedService;
+				}
+
+		-> uses directive
+			- how we designate services that our module consumes.
+			- Service is an impl of a specific interface or abstract class that can be consumed by other classes
+			- module com.jay.assorted {
+					uses <class name>;
+			}
+
+		-> Provides..With
+			- declares the service being provided, 'with' <implementation class>
+			- module com.jay.assorted {
+					provides <interface or abstract class> with <Implementation class>
+			}
+
+		-> open
+			- allows full reflection as per prior o java 9
+			- java 9 enforces strong encapsulation; explicit permission should be granted for other modules to do reflection on our classes
+			- open module com.jay.assorted{}
+
+		-> opens directive
+			- specifies packages in the module to be opened up to everyone
+			- module com.jay.assorted{
+					opens <package>;
+			}
+
+			-> opens..to directive
+			- similar to opens but this one specifies the modules the package would be opened up to.
+			- module com.jay.assorted{
+					opens com.jay.assorted to <module1, ..moduleN>;
+			}
+
+		Module Visibility
+			- open, opens, opens..to is runtime only
+
+		-> Maven and Java Modules
+			- in standard maven modules, child mvn modules are under a parent pom specified in the <modules> section. maven's reactor then takes care of building the whole project in the right order
+			- to apply java modules to maven, each maven module is wrapped in a java module - each maven module would have a module descriptor file: module-info.java
+			- e.g. https://www.baeldung.com/maven-multi-module-project-java-jpms
+
+Sept 4
+
++ created gh repo 
+	-> https://github.com/jays-codes/javaMasterclassBtoE
++ created local git workspace folder 
+	-> C:\jay\repo\git\javaMasterclassBtoE
++ create test mvn proj in git workspace folder and synched with gh
+	-> C:\jay\repo\git\javaMasterclassBtoE\jmcb2e-test
+	-> javaMasterclassBtoE/jmcb2e-test/
+
+
+
+---------------------------------------------------------------
+Java Masterclass Beginner to Expert Guide - Paulo Dichone
+
+started: Sept 4
+
+

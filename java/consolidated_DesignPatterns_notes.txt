@@ -1,0 +1,82 @@
+
+Oct 13
+DP: Strategy
+DP: Observer
+DP: Decorator
+DP: Factory Method
+DP: Abstract Factory
+DP: Singleton
+DP: Command
+-------------------
+
+Head First Design Patterns [HF]
+
+DP: Strategy Pattern
+	- Behavioral Pattern
+	- Define a family of algorithms, encapsulating each one and makes them interchangeable inside the original context object
+	- The original object/context has reference(s) to a strategy object and may be replaced accordingly with another startegy object to change behavior associated with the context
+	- allows changing the behavior of theclass without extending it
+	- strategy pattern can be recognized by a method that lets nested object do the actual work as well as the setter that allows replacing that object with a different one
+	- state/object references of a class denotes behavior/strategy
+	- i.e. 
+		interface Strategy{ doSomething(); }
+			StrategyA implements Strategy;
+			StrategyB implement Strategy;
+
+		abstract class Context {
+			Strategy strategy;
+
+			setStrategy(Strategy strategy){this.strategy = strategy}
+		}
+	- jdk samples:
+		- java.util.Comparator.comare()
+		- javax.servlet.http.HttpServlet.service()
+	- possible applications
+		- payment methods in an ecommerce app
+
+DP: Observer Pattern
+	- Behavioral Pattern
+	- defines 1-to-m relationship between set of objects
+	- when one object changes state, dependents are notified and updated automatically
+	- subject and observer(s)
+	- The pattern can be recognized by subscription methods that stores object in a list and by calls to the update method issued to objects in that list
+	- a subject would have:
+		- event manager
+		- collection of observers
+		- registerObserver(observer)
+		- removeObserver(observer)
+		- notifyObserver() -> this calls the update() mathod for each observer reference
+	- observer 
+		- listener
+		- would just have update(changes)
+		- should implement Observer interface
+		- has a reference to a subject it is observing. with that reference, you can call the registerObserver() passing 'this' to register this as an observer
+		- the parameter passed inside update contains the changes from the subject
+	- jdk examples
+		- java Listeners
+
+DP: Decorator Pattern
+	- Structural Pattern
+	- attach additional responsibilities to an object dynamically. provides an alternative to subclassing for extending functionality
+	- uses open-closed principle - closed to modification, open to extension
+	- Decorator is also called a 'wrapper'
+	- Decorator is abstract and implements the same interface as the object it is wrapping
+	- concrete implementations of the the decorator would have a reference (of the type of interface discussed above) to the object it is wrapping. that reference is instantiated via the constructor
+	- you can see the pattern when you see an object reference being passed in to a constructor of another object being initialized and both object reference are of the same class or interface. 
+	- classes belonging to the same decorator types would have overriding methods
+	- jdk
+		- java.io.InputStream, OutputStream, Reader, Writer
+	- practical examples: 
+		- encoding and compressions decorators
+	
+DP: Factory Method
+	- encapsulates implements object creation an abstract method in a subclass. Subclasses decide what object is created
+	- returns a product type that is typically used within methods in the parent class 
+	
+	- BP: instead of a long if-then-else statement, use a map
+
+-------------------
+created: oct 11
+
+git	: c:\jay\repo\git\deisgnPatternsTraining
+gh	: git@github.com:jays-codes/designPatternsTraining.git

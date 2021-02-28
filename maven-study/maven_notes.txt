@@ -1,3 +1,476 @@
+1-sept-20
+
+Maven Site Generation and Deployment
+- setup raw repo in nexus 
+- add below in <distributionmanagement> in pom
+		<site>
+			<id>academy-site</id>
+			<url>http://localhost:8081/repository/academy-site/</url>
+		</site>
+- make sure plugin for site maven-site-plugin is referenced in pom
+- run mvn site-deploy
+- in nexus manager, make sure 'content disposition' is set as 'inline'
+
+Maven RELEASE-PLUGIN
+	- stage 1: prepare for release
+	- stage 2: performing the release
+
+-> to prepare pom to execute mvn release, add below entry to <plugins>:
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>3.0.0-M1</version>
+					<configuration>
+						<tagNameFormat>v@{project.version}</tagNameFormat>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+					</configuration>
+				</plugin>
+
+-> release:prepare
+-> release:perform
+		- if this fails (in git bash), make sure it is referencing the correct settings.xml
+-> release:clean
+-> release:rollback
+
+Maven Release Process
+	- write code, wrok on snapshot releases
+	- deploy into local nexus snapshot repo
+
+-> to deploy release into nexus
+	- add an entry in the pom for the <repository> under <distributionManagement>:
+		<repository>
+			<id>maven-releases</id>
+			<url>http://localhost:8081/repository/maven-releases/</url>
+		</repository>
+	- ensure there is a corresponding server and repositories entry for releases in the settings.xml 
+
+-> to setup scm github for release
+	- add the <scm> entry in the pom:
+	<scm>
+		<connection>scm:git:git@github.com:jays-codes/mvnTTABJP.git</connection>
+		<developerConnection>scm:git:git@github.com:jays-codes/mvnTTABJP.git</developerConnection>
+		<url>scm:git:git@github.com:jays-codes/mvnTTABJP.git</url>
+	  <tag>HEAD</tag>
+  </scm>
+
+-> To create an SSH key:
+	- in git bash, run this commend:
+		$ ssh-keygen -t rsa -b 4096 -C "zai_menorca@yahoo.com"
+	- remember a passphrase you used
+	-run$ clip < ~/.ssh/test_id_rsa.pub
+	- go to github, under prile go to security > ssh gpg keys, and create a new ssh keys and paste the key
+
+16-aug-20
+
+Repositories
+	- local repo - cache that sits on the developers computer, in the m2 folder
+		- it uses artifact created locally or downloaded from a remote repo (mvn central - only for open source)
+	- divided into releases and snapshots
+	- local repo is configured in eclipse in preferences > maven > user settings
+
+Release Repo
+	- pivate release repo. contains artifacts we deploy ourselves and also acts as a cache for artifacts from maven central. 
+	- acts as a proxy cache for maven central
+	- where we publish our own artifacts "clean install DEPLOY"
+	- once artifacts are published in the release repository, it can NOT be deleted
+
+-> Repository Manager (sonatype Nexus)
+	- where releases and snapshot repos should be hosted and managed
+	- should be run on a network
+	- site
+	- when done stup, you upload the artifacts here by running the deploy plugin
+
+	-> to change which repo your local maven pulls from (in settings.xml):
+			<profile>
+		      	<id>use-builds</id>
+		      	<activation>
+		      		<activeByDefault>true</activeByDefault>
+		      	</activation>
+				<repositories>
+					<repository>
+						<id>den-snapshot</id>
+						<url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+						<snapshots>
+							<updatePolicy>interval:4</updatePolicy>
+						</snapshots>
+					</repository>
+				</repositories>
+		    </profile>        
+
+		    -note: interval:4 mins every 4 minutes (interval, default, never, always)
+
+	-> Snapshots
+		- stored in snapshot repositories (via repository manager)
+		- artifacts that might still change
+	-> releases
+		- should have no dependency on a snapshot version
+		- final version. should not change
+
+	-> Setting up Nexus Repository Manager
+		- to start, run in cmd> nexus.exe /run (this is in the folder where nexus\bin is located)
+		- admin/Welcome@123
+		- in the parent pom add below to be able to add this projects artifacts into repo manager
+			<distributionManagement>
+				<snapshotRepository>
+					<id>maven-snapshots</id>
+					<url>http://localhost:8081/repository/maven-snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+
+		- in settings.xml add below for <servers>. id is 
+			<server>
+	      		<id>maven-snapshots</id>
+	      		<username>admin</username>
+	      		<password>pwdxxx</password>
+	    	</server>  
+
+
+
+
+9-aug-20
+
+Design Considerations	
+	
+	-> by class type 
+		- one parent project and separate mvn module projects for architectual layers:  controller, model, parent, repository (orm), services, utils, web
+		- e.g. inside the controller project, you would have controller classes for user, student, courses. each project having one package
+	
+	-> by functional area
+		- splitting up into functional vertical slices/Domains
+		- one parent project and separate mvn module projects for each Domain 
+			- e.g.  separate mvn module project(s) for user, student, courses, registration, audit, etc.
+			- take note each functional area might have multiple module projects associated with it:
+				- e.g. student, student-interface, student-integration, student-repository 
+				- student would be the implementation for the domain not the student object itself, and student-interface would hold the interfaces
+				- integration would hold the integration testing (IT) packages
+		- each of the mvn module project above would have their own set of packages for the 
+		architectual layers (whichever applies)
+			- e.g. courses project has
+				- controller package containing courseController class
+				- service package containing courseService class
+	
+	- haphazardly
+
+
+Multi-Module Project
+	- project aggregation via modules
+	- commands executed against parent will also be applied against child modules
+	- in parent project, you use <modules>, and in the child modules, you have reference to parent via <parent>
+
+-> Maven Reactor
+	- build reactor, mechanism in maven that handles multi-module projects
+	- allows execution of goals to modules simultaneously
+	maven does not allow cyclic dependencies- project dependent on one another
+
+8-aug-20
+
+Parent POM
+-> parent project
+	- packaging is pom
+	- it is located one folder up the children mvn projects
+	- use <dependencyManagement> to have the parent manage <dependencies> (optional). For dependencies under this element, youll have to specificly declare each one of them in child projects which needs those dependencies (groupid and artifact id). else, the child projects will not be able to reference those dependencies
+	- use <build><pluginManagement> to manage <plugins>
+	- project elements in the parent that are inherited includes:
+		- dependencies
+		- plugins configuration, executions, lists
+		- resources
+		- developers and contributors
+	- use <properties> to have child project inherit properties
+		e.g. to have all child use UTF-8 encoding,
+		<project.build.sourceEncoding>UTF-8
+
+-> child projects 
+	- would have reference to the parent project via <parent> which specifies coords for the parent
+
+Exec Maven Plugin
+	- enables execution of java app within maven
+	- goal: java. when this goal is tied to the "integration-test" phase, calling mvn install will trigger execution of a runnable class specified in <configuration><mainClass>
+	- <configuration><arguments><argument> is used to pass in properties from pom to the executable class being executed
+
+Maven Properties
+	- any field in the POM that isa single value element can be referenced as a variable
+		e.g. ${property.build.directory}
+	- user defined properties can be set via <properties>
+	- are inherited by child projects
+
+Maven Profiles
+	- not inheritable in parent
+	- used to control, based on logic, running of a plugin within a child project
+	- below sets up the build definition for the specific profile. plugin will only invoke with this specific profile with the id of 'output'. In eclipse, this is invoked in run configurations, when you specifically run goals and you add the profile value ('output')
+	e.g.	
+	<profiles>
+		<profile>
+			<id>output</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.denofprogramming.output.App</mainClass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+-> profile activation
+	- done by <profile><activation>
+	- whenever there are two profiles, one activebydefault and the other one is triggered, if both satisfies thecondition to be triggered, then the one that isnt the default profile would be the active one
+	- use help:active-profiles to determine the active profile
+	- types:
+		- activeByDefault :when set to true, runs profile without the profile id being specified
+		- jdk. in this option, you can also use a range 
+			e.g. <jdk>[1.5, 1.8]</jdk>
+		- fileexists
+		- property: give a name/value in pom, and pass value in run config
+		- os
+
+-> building conditional logic into pom by integrating properties with profiles
+
+-> conditional builds based on environment info
+	- e.g. you can set properties during activation. below, properties are set for existence of a file. the main class is then triggered and the property value previously set is passed in as an argument
+			<profile>
+			<id>fileExistProfile</id>
+			<activation>
+				<file><exists>${java.home}/../lib/tools.jar</exists></file>
+			</activation>
+			<properties>
+				<my.prop>Java tools.jar exists</my.prop>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.denofprogramming.output.App</mainClass>
+							<arguments>
+								<argument>${my.prop}</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+Maven Dependencies
+-> Adding dependencies to pom
+-> configuration options for dependencies
+-> modifying dependencies
+
+-> Dependency Scope
+	- compile :default. dependency is avail in all build phases and packaged with app
+	- test :avail only during tests and execution phases. e.g. junit
+	- runtime :requiredto execute and test. not for compile. e.g javax.servlet
+	- provided :provided by jdk or conatiner
+	- system :same as provided but need to provide explicit path to the jar
+
+-> finding dependencies
+	: https://search.maven.org/
+	: mvnrepository.com
+	- e.g. slf4j
+
+Maven Troubleshooting
+	-> if repo is corrupted, you can just rebuild it by deleting the repo folder (excluding settings.xml) and doing a clean package on the project which would redownload everything
+
+17-jul-20
+
+Plugin Configuration / Customizing default lifecycles
+-> to add a plugin, configure it in the pom : build>plugins>plugin. the coordinates you can get from http://maven.apache.org/plugins/index.html
+-> in the pom, modify the configuration under the element build>plugins>plugin>configuration. you can checkout the specific goal in the online maven documentation for details on configuration elements
+-> you can also assign a plugin to a particular lifecycle/tie a goal(s) to a specific phase. below ties the single goal to the package phase of the assembly plugin
+				<executions>
+					<execution>
+						<id>create-executable-jar</id>
+						<phase>package</phase>
+						<goals><goal>single</goal></goals>
+					</execution>
+				</executions>
+-> to build a runnable jar with dependencies, the main runnable class should be defined in the manifest. this can be done in the plugin configuration as per below:
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>com.denofprogramming.random.App</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-executable-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+-> plugin behavior can be overridden in the pom.xml. e.g. below overrides the maven-jar-plugin so that the goal doesn't execute default-jar in that phase/or stops invoking the phase from the lifecycle, therefore avoiding producing an extra jar
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+
+Javadoc Plugin
+-> javadoc:javadoc :generates javadoc in the target/site directory
+
+Surefire Plugin
+-> surefire:test
+- to execute the above properly, you have to run the test phase and not just the specific goal. when you run the test phase, it goes through all the other prerequisite phases
+
+
+Phases
+-> you can run phases instead of just goal(s)
+-> to run phases in eclipse:
+
+13-jul-20
+
+Plugins
+	- http://maven.apache.org/plugins/index.html
+	-> provides a set of goals
+
+Goals
+	-> represent a specific task required for the building of a project
+	-> zero or more bound to a phase
+	- to run a specific goal, use the format <plugin>:<goal> e.g. compiler:compile
+	- in eclipse run configuration, you can run multiple goals by separating them with a space. e.g. "clean:clean compiler:compile"
+
+Maven Life Cycles
+	- Clean
+	- Build
+	- Site
+
+	-> each lifecycle has phase(s), and,
+	-> each phase has a responsibility to execute a goal, or has a goal bound to it. It is also possible that a phase doesn't have a goal defined for it.
+	-> cmd: "mvn help:describe -Dcmd=clean" <- tells what lifecycle this phase belongs to
+		- you can also use the above command in eclipse as a run config "help:describe -Dcmd=<phase>"
+
+POM
+- contains:
+	- general project info
+	- build settings: customize life cycles, add new plugins and goals 
+	- build env: configure diff deployment environments
+	- pom relationships: modeules and submodules
+- defaults are set in super pom
+
+packaging: jar, war, pom, etc
+
+
+
+maven directory layout
+- Project folder
+	- src
+		- main
+			- java, resources, webapp, config, scripts, filters
+		- test
+			- java, resources, filters
+		- it
+		- assembly
+		- site
+	- target
+	- pom.xml
+
+Archetype
+- maven.apache.org/archetypes/index.html
+-> provides the underlying structure of a maven project (depends on the type of archetype)
+
+-> BP: ideal creation of a test mvn proj would be:
+	1. to create via cmd line using archetype info. you run the cmd under the workspace folder which is already enabled in git.
+	2. import in eclipse > maven ? existing maven projects; this will show as a git project
+	3. do maven > update project to refresh the ide elements for this project
+	4. you can update and commit and push, in eclipse as necessary
+
+------------------------------------------
+june notes
+
+ud: Maven: Stop building Java programs the hard way
+
+------------
+
+-> to check-in an mvn parent pom project w/ 2 mvn proj modules, do team > share project. This will link the project to a local git workspace. when the project is checked in, make sure the parent and all the modules are added. Afterwards, do a commit and push.
+If the project structure is altered in package explorer, you can delete the local copy and try to get a new one by importing from scm-git. with egit installed, the complex maven project structure is properly setup in package explorer. take note that git doesn't track empty folders so if you have a source folder that isn't there, it needs to be reconstructed.
+
+-> to setup parent pom (packaging = pom)
+	-> create maven pom project
+		- this serves as the parent project
+	-> create maven module
+		- under the parent project you create maven modules that references a child maven project
+
+	-> copy shared properties in parent pom
+
+-> default mvn proj:
+	- 4xsource folders: src/main/java, src/main/resources, src/test/java, src/test/resources
+	- pom.xml
+	- jre
+	- mvn dependencies
+
+-> pom.xml
+	- groupId
+	- artifactId
+	- version
+	- properties
+		- maven.compiler.target (1.8)
+		- maven.compiler.source (1.8)
+		- project.build.sourceEncoding (UTF-8)
+	- dependencies
+		- junit (junit-jupiter-engine) : testing
+		- assertj : testing
+		- mysql
+		- javaee-web-api : provided
+		- jstl
+	- plugin
+		- right-click > maven > add plugin
+		- jacoco : code coverage; need to setup run config
+		- maven-site-plugin ;setup application on server
+		- maven-surefire-plugin ;for unit tests
+		- maven-assembly-plugin ;for building runnable jar with dependencies
+		- plugin dependency for junit: <if you dont have the below mvn teston junit5 wont execute any test>
+		<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.0</version>
+            </plugin>
+        </plugins>
+    	</build
+
+-> to setup in eclipse:
+	- non default mvn repo -> C:\jay\repo\mvn
+	- non-defo installation -> C:\jay\installed\apache-maven-3.6.3
+	- non-defo mvn settings -> C:\jay\installed\apache-maven-3.6.3\conf\jaysSettings.xml
+	- setup eclipse to download repo index on startup -> preferences > maven
+	- reindex eclipse maven setup -> preferences > maven > user settings
+	- create mvn package run config for project
+	- setup m2e for egit : this is to be able to import from scm with a git connector
+	
+-> to create mvn project
+	- configured standard pom 
+		- add properties
+		- add dependencies	
+		- add plugin	
+
 ------------------------------------------
 13 may 20 wed
 
@@ -41,6 +514,9 @@ Folder structure
 	workspace 
 		> /<ProjectFolder> 
 			> /src/main/java
+			> /src/main/resources
+			> /src/test/java
+			? /src/test/resources
 			> /target
 			> pom.xml
 

@@ -1,0 +1,155 @@
+oct 7
+
+Multithreading
+Threading foundation types
+Thread pools
+Concurrency issues
+coordinating method access
+manual thread synchronization
+concurrency related types and packages
+
+	
+	Process
+	- instance of a program or application
+	- thing that gets created when an application is started
+	- has at leas one thread
+
+	Thread
+	- executes program code
+	- sequence of programmed instructions
+	- utilizes process resources
+
+	Case for multithreading
+	- better utilize cpu
+	- break the problem into parts
+	- handoff the parts for processing
+	- e.g. instead of iterating and sequentially processing through a list of files, for each iteration, create and run a thread to process the file. To do this, you have to instantiate a Thread object for each iteration. e.g.:
+		for (int i=0;i<10;i++) {
+			Runnable processor = new Processor(processItem[i]);
+			Thread thread = new Thread(processor);
+			thread.start();
+		}
+	In the above example, if in case the main calling thread completes before the other thread do, the other threads will not be able to finish. we have to ensure that the main calling thread is still alive after the other threads completes, we have to call join on the threads being created. e.g.:
+		Thread[] threads = new Thread[];
+		for (int i=0;i<10;i++) {
+			Runnable processor = new Processor(processItem[i]);
+			threads[i] = new Thread(processor);
+			threads[i].start();
+		}
+
+		for (Thread thread:threads)
+			thread.join();
+		
+		What the code above does is to have the main thread wait on the thread where join() is invoked. this ensure main thread is running until all threads are done
+
+	Runnable Interface
+	- task to be run on a thread
+	- only method: run() 
+
+	Thread class
+	- represents a thread of execution
+
+	Thread Pools
+	- Creates a queue for tasks
+	- takes tasks from a queue and assigns into a pool of threads
+	- handles details of managing threads
+
+	ExecutorService Interface
+	- models thread pool behavior
+	- can submit tasks
+	- reuqest and wait for pool shutdown
+
+	Executor class
+	- methods for creating thread pools
+		- dynamically sized pools
+		- size limited pools
+		- pools that schedule tasks for later
+		- e.g.
+		ExecutorService es = Executors.newFixedThreadPool(4);
+		for (int i=0;i<10;i++) {
+			Runnable processor = new Processor(processItem[i]);
+			es.submit(processor);
+		}	
+		try {
+			es.shutdown();
+			es.awaitTermination(60, TimeUnit.SECONDS);
+		} catch (Exception e){}
+
+	Making Thread tasks talk to each other
+
+	- Callable interface
+		- represents a task to be run on a thread
+		- like runnable but can return results and throw exceptions
+
+	- Future interface
+		- represents results from a thread task
+		- returned by ExecutorService.submit()
+	
+		- Callable/Future Interface e.g.
+		class Processor implements Callable <ProcessResult>{
+			public ProcessResult process(){}
+			public ProcessResult call() throws Exception{
+				return process();
+			}
+		}
+
+		Future <ProcessResult>[] results = new Future[processItems.length];
+
+		ExecutorService es = Executors.newFixedThreadPool(4);
+		for (int i=0;i<10;i++) {
+			Callable processor = new Processor(processItems[i]);
+			results[i] = es.submit(processor);
+		}	
+		try {
+			es.shutdown();
+			es.awaitTermination(60, TimeUnit.SECONDS);
+		} catch (Exception e){}
+
+		//To retrieve the results
+		for (Future<ProcessResult> future:results) {
+			try{
+				ProcessResult result = future.get();
+			} catch(ExecutionException e) { //Exception raised in Processor
+				Throwable processprEx = e.getCause();
+			}
+			System.out.println(result);
+		}
+
+	Concurrency Issues
+	- no issues when threads only reads shared resources. problem is when they modify the resource
+	- to avoid the above we have to coordinate method access. this is done via
+	
+	- Synchronized Methods
+		- reading value thats modified by another thread
+		- has significant overhead
+		- constructor are never synchronized
+		- used on methods that access or read a resource modified by other methods
+		- e.g. public synchronized ProcessResult process(){}
+		- synched method checks if the resource is locked, if it isn't, it acquires a lock on the resource and proceeds until it completes and then releases the lock. other threads then go through the same cycle.
+
+	- Manual Synchronization
+		- using synchronized statement block
+		- available to any code with a reference to an object
+		- enables use of non-thread safe classes in a threadsafe way
+		- protect complex blocks of code
+		- e.g.
+		class Processor implements Callable <ProcessResult>{
+			private ProcessItem item;
+			public ProcessResult process(){
+				synchronized(item) {
+					//do things to item reference
+				}
+			}
+			public ProcessResult call() throws Exception{
+				return process();
+			}
+		}
+
+	- when synchronized methods aren't enough
+		- when its possible for a thread to call the same synched method on the shared resources, you wrap the transaction statements within a synchronized block
+
+	- concurrency andcollections
+		- use thread safe wrappers
+		- coordinating producers and consumers via blocking queues. e.g. LinkedBlockingQueue, PriorityBlockingQueue
+		- java.util.concurrent
+		- java.util.concurrent.atomic. provides atomic operations

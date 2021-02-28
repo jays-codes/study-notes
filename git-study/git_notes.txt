@@ -1,4 +1,9 @@
 ------------------------------------------
+june
+
+bp: use ssh when cloning from gh
+
+------------------------------------------
 9 may 20
 @@@@ BP : interactive rebase
 	-> git rebase -i

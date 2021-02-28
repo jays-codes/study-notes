@@ -1,6 +1,113 @@
 
+Nov
+------------------------------------------------------------
+- apply functional interface for abstract factory for EM
+
+
+Oct
+ps: Modern Java: The Big Picture
+
+------------------------------------------------------------
+Sept
+Topics left [jmb2e]
+	+ write to file
+	+ Java Buffer Reader
+	+ Sets and HashSets
+	+ TreeSets
+	+ LinkedHashSet
+	+ Lambda Expressions
+	+ java Stream
+	+ java threads
+	- [current] design patterns
+	- Swing
+	- JavaFX
+	- Databases
+	- Webapps
+	- Vaadin
+	- Springboot
+	- JSON/Http Requests
+
+
++ installed nexus repo manager
++ [aug5] started: ud: truth about building java programs
+
+------------------------------------------------------------
 Lineup:
-	*1.) PS: Eclipse for Java Developers
+	1.) ud: Maven: Truth about bldng prog
+	2.) ud: Java Masterclass - Beginner to Expert Guide
+	2.) ud: UML and OOD foundations
+	3.) ud: Java Design Patterns - The Complete Masterclass
+	3:) HF: Design Patterns
+
+Done:
+	+ PS: Maven Fundamentals
+	+ PS: Mastering GIT
+	+ PS: Eclipse for Java Developers
+	+ ud: Maven: Stop bldng java prog the hard way
+
+------------------------------------------------------------
+Aug
++ installed nexus repo manager
++ [aug5] started: ud: truth about building java programs
+
+
+------------------------------------------------------------
+June
++ setup java ee environment in eclipse
+	+ setup tomcat 9. 
+		+ connect eclipse to tomcat
+	+ setup java ee maven project (packaging=war)
++ created mvn webproject (servlet, jsp)	
++ debugging servlet in tomcat debug mode
++ packaged webapp maven project as war
++ deployed war in remote tomcat, ran app
++ debug app deployed in remote server; ran tomcat in debug mode
+
+
++ [git/gh, mvn] did complicated mvn (mvn parent pom proj with two mvn module) check-in to git/gh, 
++ [git/gh, mvn] did import of mvn proj from gh, into eclipse
++ [git/gh, mvn] setup egit to make above work
++ [mysql]		install and setup DB
++ [mysql, mvn, eclipse]	interact with databases
+	+ connected eclipse to DB server
+	+ did create table sql
+	+ wrote mvn proj to create/read from db server
+	+ did data export (csv) to, and import from, eclipse/ mysql
+
+------------------------------------------------------------
+Lineup:
+	* 2.) ud: Maven: Stop bldng prog
+	3.) ud: Maven: Truth about bldng prog
+	4.) ud: Java Masterclass - Beginner to Expert Guide
+	4.) ud: UML and OOD foundations
+	5.) ud: Java Design Patterns - The Complete Masterclass
+	5:) HF: Design Patterns
+
+Done:
+	+ PS: Eclipse for Java Developers
+	+ PS: Maven Fundamentals
+	+ PS: Mastering GIT
+
+May
++ [mvn] configured mvn setup in eclipse
++ [mvn] created mvn project
+	+ configured standard pom 
+		+ added properties 
+		+ added dependencies (junit5, assertj)
++ [mvn] make Junit5, assertj work with eclipse setup
++ [mvn] create mvn run configuration for mvn package
++ [mvn] setup jacoco plugin and associated run config
++ [java] setup official jdk to use -> jdk 1.8
++ [mvn] setup two maven project and dependencies, 
++ [mvn] create parent pom project with maven modules projects
+
+31May20 Daily
+-> Finish PS: Eclipse for Java Developers
+-> start ud: Maven Stop building programs the wrong way
+
+------------------------------------------------------------
+Lineup:
+	1.) PS: Eclipse for Java Developers
 	2.) ud: Maven: Stop bldng prog
 	3.) ud: Maven: Truth about bldng prog
 	4.) ud: Java Masterclass - Beginner to Expert Guide
@@ -9,6 +116,8 @@ Lineup:
 	5:) HF: Design Patterns
 
 Done:
+	+ PS: Maven Fundamentals
+	+ PS: Mastering GIT
 ------------------------------------------------------------
 --------------------
 30may20

@@ -1,0 +1,35 @@
+Eclipse and Databases
+
+<refer to android: "Study Notes" for mysql config>
+----------------------
+
+
+- BP: depndencies: if a mvn project references another mvn project which is open in the workspace (not yet installed in repo) it will reference that open project. Else if that project is already installed in the repo, and the workspace copy is closed, it will reference the jar in the repo. Also same if you changed the version of the project in the workspace copy (opened project) 
+----------------------
+- BP: settings -> C:\jay\installed\apache-maven-3.6.3\conf
+
+- BP: setup maven index by preferences > maven  
+
+- BP: when configuring new mvn project, check jdk being referenced
+
+- BP: when configuring maven for eclipse, dont use the embedded version but an external one
+
+- BP: for issue running junit, make sure it conforms to jdk version. so far, junit 5.6.0 and assertj 3.16.1 works with jdk 1.8. Based on test, jdk installation without jre doesnt work (jdk 11 and 13)
+
+Workspace = Folder
+has project(s) = subfolders
+
+workspace
+	-> .metadata
+	-> version.ini
+	-> .log
+	-> .lock
+
+project
+	-> .settings
+	-> .classpath
+	-> .project
+
+- BP: when setting up eclipse, convert default encoding to UTF-8, not cpl2522. Aswell, take note to add proper entried in pom file for encoding
+
+- BP: when using an external library, configure user libraries
