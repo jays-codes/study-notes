@@ -1,4 +1,11 @@
 ------------------------------------------
+mar 2021
+
+bp: when setting up to clone a gh from a new machine
+	1. generate ssh key from new machine and add it to gh
+	2. perform the clone
+
+------------------------------------------
 june
 
 bp: use ssh when cloning from gh

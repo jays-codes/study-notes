@@ -5,9 +5,34 @@ Mar 2021
 
 - Setting up environment on new PC
 	+ generated ssh-key, added to gh
-	+ done copy of study-notes folder
+	+ done copy of study-notes folder : cloned notes repo from gh into local
+	- clone non-notes projects from gh
+	- setup git in eclipse
 ------------------------------------------------------------
 
+------------------------------------------------------------
+Updated Training Plan March 2021
+
+- UML and OO Design Foundations
+- java des patterns the complete masterclass
+- advanced algorithms in java
+- recursion, backtracking and dynamic programming in java
+- java se desktop application with swing, jpa and maven
+- Spring mVC for beginners - build java web apps in 25 steps
+- Java EE with vaadin, spring boot and maven
+- Spring & Hibernate for beginners (includes spring boot)
+- Spring Framework Master class - Java Spring the modern way
+- Full Stack: Angular and Spring boot
+- Master Hibernate and JPA with Spring Boot in 100 steps
+- Master Java Web Services and Restful API with Spring boot
+- Go Java Full Stack with Spring boot and angular
+- Spring Boot Microservices with Spring Cloud beginner to guru
+- Master microservices with springboot and spring cloud
+- Deploy Java Spring apps online to amazon cloud (AWS)
+- Devops: CI/CD with jenkins pipelines, maven, gradle
+- The complete guide to becoming a software architech
+- AWS Certified Solutions Architect associate - step by step
+------------------------------------------------------------
 
 
 Nov
