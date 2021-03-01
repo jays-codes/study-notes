@@ -4,6 +4,7 @@ Mar 2021
 ------------------------------------------------------------
 
 - Setting up environment on new PC
+	+ generated ssh-key, added to gh
 	+ done copy of study-notes folder
 ------------------------------------------------------------
 
