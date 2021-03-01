@@ -1,4 +1,14 @@
 
+
+Mar 2021
+------------------------------------------------------------
+
+- Setting up environment on new PC
+	+ done copy of study-notes folder
+------------------------------------------------------------
+
+
+
 Nov
 ------------------------------------------------------------
 - apply functional interface for abstract factory for EM
