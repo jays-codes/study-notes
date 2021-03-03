@@ -6,8 +6,9 @@ Mar 2021
 - Setting up environment on new PC
 	+ generated ssh-key, added to gh
 	+ done copy of study-notes folder : cloned notes repo from gh into local
-	- clone non-notes projects from gh
-	- setup git in eclipse
+	+ clone non-notes projects from gh
+	+ setup egit in eclipse
+	- setup maven
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -102,7 +103,7 @@ June
 
 + [git/gh, mvn] did complicated mvn (mvn parent pom proj with two mvn module) check-in to git/gh, 
 + [git/gh, mvn] did import of mvn proj from gh, into eclipse
-+ [git/gh, mvn] setup egit to make above work
++ [git/gh, mvn] setup m2e-egit to make above work (see eclipse_notes.txt)
 + [mysql]		install and setup DB
 + [mysql, mvn, eclipse]	interact with databases
 	+ connected eclipse to DB server

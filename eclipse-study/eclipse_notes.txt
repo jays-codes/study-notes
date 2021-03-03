@@ -1,10 +1,22 @@
 Eclipse and Databases
 
-<refer to android: "Study Notes" for mysql config>
+<refer to android hand notes "Study Notes" for mysql config>
+----------------------
+3mar21
+- BP: eclipse setup to import mvn project from gh, install m2e-egit (PS: Eclipse for Java Developers, Section 4)
+
+
+
+- BP: checking out projects from gh
+	option #1: 
+		- In eclipse, open the 'GIT Repositories' view, right click 'clone a git repo'
+		- this adds the gh repo to your local git repo (c/jay/training/repo/git). you should specify the folder name (workspace) using the name of the gh repo. this creates the local repo folder, and in it contains the projects.
+		- once the local repo/workspace folder is created, add the necessary projects to the eclipse workspace by import > existing maven projects
+	option #2: In eclipse, "import > maven > Check out maven projects from scm"
 ----------------------
 
-
 - BP: depndencies: if a mvn project references another mvn project which is open in the workspace (not yet installed in repo) it will reference that open project. Else if that project is already installed in the repo, and the workspace copy is closed, it will reference the jar in the repo. Also same if you changed the version of the project in the workspace copy (opened project) 
+
 ----------------------
 - BP: settings -> C:\jay\installed\apache-maven-3.6.3\conf
 
